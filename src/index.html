@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="shortcut icon" href="../favicon-96.png">
+  <link rel="apple-touch-icon" href="../favicon-180.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EIRLUME</title>
+  <meta name="description" content="Real-time 3D blockchain visualization">
+  <meta property="og:title" content="Real-time 3D blockchain visualization" />
+  <meta property="og:type" content="game" />
+  <meta property="og:url" content="https://eirlume.io/" />
+  <meta property="og:image" content="https://spaceinvaders.viperfish.com.au/assets/images/space_Invaders_babylonjs_3.jpg" />
+  <meta property="og:site_name" content="Real-time 3D blockchain visualization" />
+  <meta property="og:description" content="Real-time 3D blockchain visualization" />
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@brandonpowers">
+  <meta name="twitter:creator" content="@brandonpowers">
+  <meta name="twitter:title" content="Real-time 3D blockchain visualization">
+  <meta name="twitter:description" content="Real-time 3D blockchain visualization">
+  <meta name="twitter:image:src" content="https://spaceinvaders.viperfish.com.au/assets/images/space_Invaders_babylonjs_3.jpg">
+  <meta name="twitter:domain" content="eirlume.io">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Exo&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/style.scss">
+</head>
+<body>
+<div id="container">
+  <canvas></canvas>
+  <div id="ui" class="active">
+    <div id="title-screen" class="active">
+      <div id="title">
+        <div class="layer layer2">
+          eirlume
+        </div>
+      </div>
+      <div id="portrait-warning"></div>
+      <div id="credits">
+        <!--
+        <div>
+          <p>------</p>
+          <p>Arrow keys to move <br/>Shift, Space or Enter to shoot</p>
+          <p>------</p>
+          <div class="small">
+            <p>2022 by John Pitchers</p>
+          </div>
+        </div>
+        -->
+      </div>
+    </div>
+    <div id="game-ui" class="">
+      <div id="panel-game-over" class="">
+        GAME OVER
+      </div>
+      <div id="panel-new-highscore" class="">
+        **** NEW HIGH SCORE ****<br>
+        <div class="value">0</div>
+      </div>
+      <div id="panel-game-hints">
+        ---==Ξ <span class="lg">!</span> Ξ==---
+        <div class="value"></div>
+        ---==Ξ==---
+      </div>
+    </div>
+  </div>
+</div>
+<div id="loading" class="active">LOADING<br/>...</div>
+<div id="intro" class="">
+  <!--
+  <p>Select mode<br/><select id="change-mode">
+    <option value="0">Traditional 2D</option>
+    <option value="1">2D oldschool CRT</option>
+    <option value="2" selected="selected">Action cam 3D</option>
+  </select></p>
+  -->
+  <p>
+    <button id="start-game">LAUNCH</button>
+  </p>
+</div>
+<div id="panel-play-again" class="">
+  <button id="play-again">PLAY AGAIN</button>
+</div>
+<script type="module" src="./main.js"></script>
+<script>
+  loading();
+
+  function loading() {
+    setTimeout(function () {
+      let el = document.querySelector("#loading")
+      el.append(".");
+      if (el.classList.contains("active")) {
+        loading();
+      }
+    }, 1000);
+  }
+</script>
+</body>
+</html>

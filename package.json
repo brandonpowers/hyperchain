@@ -1,0 +1,19 @@
+{
+  "name": "space_invaders_babylonjs_project",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build --emptyOutDir",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "sass": "^1.49.9",
+    "vite": "^2.8.0"
+  },
+  "dependencies": {
+    "@babylonjs/core": "^5.20.0",
+    "@babylonjs/gui": "^5.20.0",
+    "@babylonjs/loaders": "^5.20.0",
+    "ethers": "^5.7.0"
+  }
+}
