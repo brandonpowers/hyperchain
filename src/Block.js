@@ -4,7 +4,7 @@ import {BlocksController} from "./BlocksController";
 import _ from 'lodash';
 import eirlumeConfig from "../eirlume.config";
 
-export class Alien extends BlocksController {
+export class Block extends BlocksController {
 
   constructor(scene, mesh = null, x = 0, y = 0, isMempool = false, block = null) {
     super();
@@ -24,10 +24,10 @@ export class Alien extends BlocksController {
       z: 0
     };
     this.txns = [];
-    this.initAlien();
+    this.initBlock();
   }
 
-  initAlien() {
+  initBlock() {
     let id = Math.floor(Math.random() * 100000).toString(16);
     
     const faceColors = new Array(6);
@@ -40,7 +40,7 @@ export class Alien extends BlocksController {
     }
     faceUV[5] = new Vector4(0, 0, 1, 1);
 
-    this.mesh = new MeshBuilder.CreateBox("alien-" + id, {
+    this.mesh = new MeshBuilder.CreateBox("block-" + id, {
       width: this.size,
       height: this.size,
       depth: this.size,
@@ -68,7 +68,7 @@ export class Alien extends BlocksController {
     this.mesh.material = material;
     this.mesh.enableEdgesRendering();
 
-    this.mesh.name = "alien-" + id;
+    this.mesh.name = "block-" + id;
     this.mesh.position.x = this.x;
     this.mesh.position.y = this.y;
     this.mesh.position.z = this.z;
@@ -76,7 +76,7 @@ export class Alien extends BlocksController {
     //this.mesh.collisionGroup = 2;
     //this.mesh.collisionMask = 17;
     this.mesh.metadata = {
-      type: "alien",
+      type: "block",
       scoreValue: 10
     };
 
@@ -209,7 +209,7 @@ export class Alien extends BlocksController {
     
     //console.log(results);
 
-    //if(minedBlock.transactions.length !== results[1].length){
+    if(minedBlock.transactions.length !== results[0].length){
       //console.log('Results don\'t match!!');
       console.log('Mined');
       console.log(minedBlock.transactions);
@@ -217,15 +217,8 @@ export class Alien extends BlocksController {
       console.log(results[0]);
       console.log('1');
       console.log(results[1]);
-    //}
+    }
 
-    results[1].forEach(t => t.mesh.dispose());
-
-    //const results = _.partition(pendingTxns, function());
-    //_.partition(users, function(o) { return o.active; });
-
-    //for(let i = 0; i < pendingTxns.length; i++) {
-    //  this.createTxn(txns[i]);
-    //}
+    results[0].forEach(t => t.mesh.dispose());
   }
 }

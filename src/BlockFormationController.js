@@ -1,5 +1,5 @@
 import {BlocksController} from "./BlocksController";
-import {Alien} from "./Alien";
+import {Block} from "./Block";
 import {Axis, Scalar, Space, Mesh, StandardMaterial, Vector3, Color3, MeshBuilder, TransformNode} from "@babylonjs/core";
 import {AdvancedDynamicTexture, Control, Style, TextBlock} from "@babylonjs/gui";
 import State from "./State";
@@ -8,10 +8,10 @@ import {Explosion} from "./Explosion";
 import {shortenAddress} from "./utils/shortenAddress";
 //import eirlumeConfig from "../eirlume.config";
 
-export class AlienFormationController {
+export class BlockFormationController {
 
   defaultParams = {
-    columns: 1,
+    columns: 2,
     rows: 0,
     spacing: {
       x: -16,
@@ -21,13 +21,13 @@ export class AlienFormationController {
     formationAnimSpeed: 0.15,
     fireRate: 1, // Avg bullets per second
     numBarriers: 0,
-    alien1Lives: 0
+    block1Lives: 0
   }
   maxBlocks = 12;
   minX = -45;
   maxX = 45;
   minY = -6;
-  aliens = [];
+  blocks = [];
   bullets = [];
   barriers = [];
 
@@ -76,11 +76,11 @@ export class AlienFormationController {
   }
 
   createMempoolTxn(txn) {
-    this.aliens[0].createTxn(txn);
+    this.blocks[0].createTxn(txn);
   }
 
   updateMempool(minedBlock) {
-    this.aliens[0].updateMempool(minedBlock);
+    this.blocks[0].updateMempool(minedBlock);
   }
 
   createMempool(network) {
@@ -88,25 +88,25 @@ export class AlienFormationController {
    
     let y = (rc * this.levelParams.spacing.y) - (this.levelParams.spacing.y / 2);
 
-    let alien = new Alien(this.scene, null, this.x, y, true);
-    alien.mesh.metadata.lives = this.levelParams.alien1Lives ?? 0;
-    alien.mesh.metadata.scoreValue = 10;
+    let block = new Block(this.scene, null, this.x, y, true);
+    block.mesh.metadata.lives = this.levelParams.block1Lives ?? 0;
+    block.mesh.metadata.scoreValue = 10;
 
     // Scaling
-    alien.mesh.scaling = new Vector3(1 - (rc * 0.14), 1 - (rc * 0.14), 1 - (rc * 0.14));
-    alien.x = this.x;
-    alien.y = y;
-    alien.id = alien.mesh.id;
-    alien.mesh.onDispose = (mesh) => {
+    block.mesh.scaling = new Vector3(1 - (rc * 0.14), 1 - (rc * 0.14), 1 - (rc * 0.14));
+    block.x = this.x;
+    block.y = y;
+    block.id = block.mesh.id;
+    block.mesh.onDispose = (mesh) => {
       if (State.state !== "GAMEOVER") {
         this.onDestroyMesh(mesh);
       }
     };
-    this.aliens.push(alien);
+    this.blocks.push(block);
 
-    //alien.mesh.rotation.y = 1.57;
-    //alien.mesh.rotate(new Vector3(1,0,0));
-    //var advancedTexture2 = AdvancedDynamicTexture.CreateForMesh(alien.mesh, 512, 256, false);
+    //block.mesh.rotation.y = 1.57;
+    //block.mesh.rotate(new Vector3(1,0,0));
+    //var advancedTexture2 = AdvancedDynamicTexture.CreateForMesh(block.mesh, 512, 256, false);
     //advancedTexture2.wAng = -Math.PI/2;
 
     var label = new TextBlock("mempoolLabel" + this.chainIndex, `${network.protocol}\n(${network.name})`);
@@ -115,66 +115,68 @@ export class AlienFormationController {
     label.color = "white";
     this.advancedTexture.addControl(label);
     //advancedTexture2.addControl(label);
-    label.linkWithMesh(alien.mesh);
+    label.linkWithMesh(block.mesh);
     label.linkOffsetY = 180;
-    alien.label = label;
+    block.label = label;
   }
 
-  createAlien(block) {
+  createBlock(chainBlock) {
     const cc = this.chainIndex - 1;
     const rc = 1;
 
     let y = (rc * this.levelParams.spacing.y) - (this.levelParams.spacing.y / 2);
 
-    let alien = new Alien(this.scene, null, this.x, y, false, block);
-    alien.mesh.metadata.lives = this.levelParams.alien1Lives ?? 0;
-    alien.mesh.metadata.scoreValue = 10;
+    let block = new Block(this.scene, null, this.x, y, false, chainBlock);
+    block.mesh.metadata.lives = this.levelParams.block1Lives ?? 0;
+    block.mesh.metadata.scoreValue = 10;
 
     // Scaling
-    alien.mesh.scaling = new Vector3(1 - (rc * 0.14), 1 - (rc * 0.14), 1 - (rc * 0.14));
+    block.mesh.scaling = new Vector3(1 - (rc * 0.14), 1 - (rc * 0.14), 1 - (rc * 0.14));
 
     // Start at 1 to skip the mempool and move all the blocks back to create space for the new one
-    for(let i=1; i < this.aliens.length; i++){
-      let aI = this.aliens.length - i;
-      let a = this.aliens[i];
+    const blockCount = this.blocks.length;
+    this.blocks.forEach((a, i) => {
+      if(i === 0) return;
+      const aI = blockCount - i;
       a.y = ((aI + 1) * this.levelParams.spacing.y);
       a.mesh.scaling = new Vector3(1 - ((aI + 1) * 0.14), 1 - ((aI + 1) * 0.14), 1 - ((aI + 1) * 0.14));
-    }
+      a.label.fontSize = Math.abs(13 - aI);
+    });
 
-    alien.x = this.x;
-    alien.y = y;
-    alien.id = alien.mesh.id;
-    alien.setYRotation(this.aliens[this.aliens.length-1].mesh.rotation.y + 0.2, this.aliens.length/50.0);
+    block.x = this.x;
+    block.y = y;
+    block.id = block.mesh.id;
+    block.setYRotation(this.blocks[this.blocks.length-1].mesh.rotation.y + 0.2, this.blocks.length/50.0);
 
-    alien.mesh.onDispose = (mesh) => {
+    block.mesh.onDispose = (mesh) => {
       if (State.state !== "GAMEOVER") {
         this.onDestroyMesh(mesh);
       }
     };
-    this.aliens.push(alien);
+    this.blocks.push(block);
 
-    for(let i = 0; i < block.transactions.length; i++){
-      alien.createTxn(block.transactions[i]);
+    for(let i = 0; i < chainBlock.transactions.length; i++){
+      block.createTxn(chainBlock.transactions[i]);
     }
 
     var labelNode = new TransformNode("labelNode", this.scene);
-    labelNode.parent = alien.mesh;
-    //labelNode.position.x = alien.mesh.x;
-    //labelNode.position.y = alien.mesh.y;
-    //labelNode.position.z = alien.mesh.z;
-    let hash = shortenAddress(block.hash);
-    var label = new TextBlock("blockLabel" + hash.replace('...', '-'), hash);
+    labelNode.parent = block.mesh;
+    //labelNode.position.x = block.mesh.x;
+    //labelNode.position.y = block.mesh.y;
+    //labelNode.position.z = block.mesh.z;
+    let hash = shortenAddress(chainBlock.hash);
+    var label = new TextBlock("blockLabel" + hash.replace('...', '-'), hash + '\n' + chainBlock.transactions.length);
     label.fontSize = 14;
     label.fontFamily = '"Exo"';
     label.color = "white";
     this.advancedTexture.addControl(label);
     label.linkWithMesh(labelNode);
-    alien.label = label;
-    alien.labelNode = labelNode;
+    block.label = label;
+    block.labelNode = labelNode;
     //label.linkOffsetY = -200;
 
-    if(this.aliens.length > this.maxBlocks) {
-      let a = this.aliens.splice(1,1)[0];
+    if(this.blocks.length > this.maxBlocks) {
+      let a = this.blocks.splice(1,1)[0];
       a.label.dispose();
       a.labelNode.dispose();
       a.mesh.dispose();
@@ -182,25 +184,24 @@ export class AlienFormationController {
   }
 
   buildFormation() {
-    this.alienCount = this.aliens.length;
+    this.blockCount = this.blocks.length;
     State.formation = 1;
   }
 
   onDestroyMesh(mesh) {
-    // destroy the alien object.
+    // destroy the block object.
     let i = 0
-    for (let a of this.aliens) {
+    for (let a of this.blocks) {
       if (a.id === mesh.id) {
         State.score += mesh.metadata.scoreValue;
 
-        // Bigger aliens have bigger explosions
+        // Bigger blocks have bigger explosions
         new Explosion(mesh, 20 * mesh.scaling.x, mesh.scaling.x / 1.5, this.scene);
-        //this.gameAssets.sounds.alienExplosion.play();
-        this.aliens.splice(i, 1);
+        this.blocks.splice(i, 1);
       }
       i++;
     }
-    this.alienCount = this.aliens.length;
+    this.blockCount = this.blocks.length;
   }
 
   setLoop() {
@@ -212,15 +213,15 @@ export class AlienFormationController {
       this.movementStarted = true;
     }, 3000);
     this.formationObserver = this.scene.onBeforeRenderObservable.add(() => {
-      this.updateAlienMeshPositions();
+      this.updateBlockMeshPositions();
     }, 1);
   }
 
-  updateAlienMeshPositions() {
-    for (const alien of this.aliens) {
-      let alienPosition = alien.updateMeshPosition(this.formationAnimSpeed);
-      //this.changeDirectionIfAtEdge(alienPosition);
-      //this.checkCollisionWithGround(alienPosition);
+  updateBlockMeshPositions() {
+    for (const block of this.blocks) {
+      let blockPosition = block.updateMeshPosition(this.formationAnimSpeed);
+      //this.changeDirectionIfAtEdge(blockPosition);
+      //this.checkCollisionWithGround(blockPosition);
     }
   }
 
@@ -247,8 +248,8 @@ export class AlienFormationController {
       this.direction = this.nextDirection;
     }
     //this.formationAnimSpeed = Scalar.Lerp(this.formationAnimSpeed, 0.8, 0.013);
-    if (State.state === "GAMELOOP" && this.aliens.length) {
-      //this.gameAssets.sounds.alienMove.play();
+    if (State.state === "GAMELOOP" && this.blocks.length) {
+      //this.gameAssets.sounds.blockMove.play();
       this.formationAnimInterval = Scalar.Lerp(this.formationAnimInterval, 100, 0.025);
     }
     this.formationAnimTick = setTimeout(() => {
@@ -276,7 +277,7 @@ export class AlienFormationController {
   levelFormationAlgorithm() {
     let levelParams = this.defaultParams;
 
-    // Alien grid gets bigger each level up to a max size
+    // Block grid gets bigger each level up to a max size
     const maxColumns = 10;
     const maxRows = 6;
     levelParams.columns = this.defaultParams.columns + State.level - 1;
@@ -295,13 +296,11 @@ export class AlienFormationController {
     levelParams.numBarriers = Math.floor(this.defaultParams.numBarriers + (State.level / 2) - 0.5);
     if (levelParams.numBarriers > maxBarriers) levelParams.numBarriers = maxBarriers;
 
-    // Give aliens lives, so they take more than one hit to die.
-    // From Level 4 Alien1 gets 1 life increasing by 1 every 3 levels.
-    // From Level 6 Alien2 gets 1 life increasing by 1 every 3 levels.
-    const maxAlienLives = 3;
+    // Give blocks lives, so they take more than one hit to die.
+    const maxBlockLives = 3;
     if (State.level > 3) {
-      levelParams.alien1Lives = 1 + Math.floor((State.level / 3) - 1);
-      if (levelParams.alien1Lives > maxAlienLives) levelParams.alien1Lives = maxAlienLives;
+      levelParams.block1Lives = 1 + Math.floor((State.level / 3) - 1);
+      if (levelParams.block1Lives > maxBlockLives) levelParams.block1Lives = maxBlockLives;
     }
 
     // Motherships spawn faster at higher levels.

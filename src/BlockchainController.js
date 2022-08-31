@@ -1,4 +1,4 @@
-import {AlienFormationController} from "./AlienFormationController";
+import {BlockFormationController} from "./BlockFormationController";
 import State from "./State";
 import config from "../eirlume.config";
 import { BigNumber, ethers } from "ethers";
@@ -10,11 +10,11 @@ import '@babylonjs/core/Rendering/edgesRenderer';
 
 export class BlockchainController {
 
-    constructor(scene, index, blockchainNodeUrl, alienFormationController) {
+    constructor(scene, index, blockchainNodeUrl, blockFormationController) {
         this.scene = scene;
         this.index = index;
         this.blockchainNodeUrl = blockchainNodeUrl;
-        this.alienFormationController = alienFormationController;
+        this.blockFormationController = blockFormationController;
 
         this.websocket = null;
 
@@ -31,7 +31,7 @@ export class BlockchainController {
             this.network = network;
             this.network.protocol = "ethereum";
 
-            this.alienFormationController.createMempool(network);
+            this.blockFormationController.createMempool(network);
 
             // Get the latest block
             this.websocket.getBlockNumber().then(async (blockNumber) => {
@@ -41,7 +41,7 @@ export class BlockchainController {
                 this.calcBlockStats(block);
 
                 this.blockchain.push(block);
-                this.alienFormationController.createAlien(block);
+                this.blockFormationController.createBlock(block);
             });
         });
     }
@@ -61,7 +61,7 @@ export class BlockchainController {
                 return;
             }
 
-            this.alienFormationController.createMempoolTxn(txInfo);
+            this.blockFormationController.createMempoolTxn(txInfo);
         });
 
         // Subscribe to newly mined blocks
@@ -71,13 +71,13 @@ export class BlockchainController {
 
             try{
                 // Remove all pending transactions that are in the new block
-                this.alienFormationController.updateMempool(newBlock);
+                this.blockFormationController.updateMempool(newBlock);
             }catch (error) {
                 console.log(error);
             }
 
             this.blockchain.push(newBlock);
-            this.alienFormationController.createAlien(newBlock);
+            this.blockFormationController.createBlock(newBlock);
         });
     }
 

@@ -1,5 +1,5 @@
 import {BlockchainController} from "./BlockchainController";
-import {AlienFormationController} from "./AlienFormationController";
+import {BlockFormationController} from "./BlockFormationController";
 import State from "./State";
 import config from "../eirlume.config";
 import {GameGUI} from "./GameGUI";
@@ -13,7 +13,7 @@ export class GameController {
     this.scene = environment.scene;
     this.inputController = inputController;
     this.gameAssets = gameAssets;
-    this.alienFormations = [];
+    this.blockFormations = [];
     this.blockchains = [];
   }
 
@@ -67,7 +67,7 @@ export class GameController {
 
   nextLevel() {
     State.level += 1;
-    this.buildAliensFormation();
+    this.buildBlockFormation();
     State.state = "GAMELOOP";
     //this.gameAssets.sounds.levelStart.play();
   }
@@ -76,7 +76,7 @@ export class GameController {
     /*
     this.playerController.actionCam();
 
-    if (this.alienFormations[0].alienCount === 0) {
+    if (this.blockFormations[0].blockCount === 0) {
       State.state = "PLAYERWINS";
       setTimeout(() => {
         State.state = "CLEARLEVEL";
@@ -89,7 +89,7 @@ export class GameController {
     this.gameGUI.update();
   }
 
-  aliensWin() {
+  blocksWin() {
     State.lives = 0;
   }
 
@@ -144,13 +144,13 @@ export class GameController {
     }
   }
 
-  buildAliensFormation() {
+  buildBlockFormation() {
     for (let i=0; i < eirlumeConfig.blockchainNodes.length; i++){
       let node = eirlumeConfig.blockchainNodes[i];
-      let alienFormation = new AlienFormationController(this.scene, i+1, this.gameAssets);
-      let blockchain = new BlockchainController(this.scene, i+1, node, alienFormation);
+      let blockFormation = new BlockFormationController(this.scene, i+1, this.gameAssets);
+      let blockchain = new BlockchainController(this.scene, i+1, node, blockFormation);
 
-      this.alienFormations.push(alienFormation);
+      this.blockFormations.push(blockFormation);
       this.blockchains.push(blockchain);
 
       blockchain.initialize();
@@ -162,22 +162,22 @@ export class GameController {
     let clearSteps = 4;
     this.gameGUI.update();
     // Step 1. All barriers must be destroyed.
-    if (this.alienFormations[0].barriers.length) {
-      this.alienFormations[0].destroyBarriers();
+    if (this.blockFormations[0].barriers.length) {
+      this.blockFormations[0].destroyBarriers();
       clearSteps -= 1;
     }
-    // Step 4. Destroy remaining alien bullets.
-    // Step 5. Destroy remaining aliens
-    if (this.alienFormations[0].aliens.length) {
-      let randID = Math.floor(Math.random() * this.alienFormations[0].aliens.length);
-      this.alienFormations[0].aliens[randID].mesh.dispose();
-      this.alienFormations[0].aliens.splice(randID, 1);
+    // Step 4. Destroy remaining block bullets.
+    // Step 5. Destroy remaining blocks
+    if (this.blockFormations[0].blocks.length) {
+      let randID = Math.floor(Math.random() * this.blockFormations[0].blocks.length);
+      this.blockFormations[0].blocks[randID].mesh.dispose();
+      this.blockFormations[0].blocks.splice(randID, 1);
       clearSteps -= 1;
     }
 
     if (clearSteps === 4) {
-      this.alienFormations[0].clearScene();
-      delete this.alienFormations[0];
+      this.blockFormations[0].clearScene();
+      delete this.blockFormations[0];
       // final cleanup to ensure everything has been disposed of.
       while (this.scene.meshes.length) {
         this.scene.meshes[0].dispose();
