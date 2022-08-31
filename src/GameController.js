@@ -145,17 +145,21 @@ export class GameController {
   }
 
   buildBlockFormation() {
-    for (let i=0; i < eirlumeConfig.blockchainNodes.length; i++){
-      let node = eirlumeConfig.blockchainNodes[i];
-      let blockFormation = new BlockFormationController(this.scene, i+1, this.gameAssets);
-      let blockchain = new BlockchainController(this.scene, i+1, node, blockFormation);
+    let index = 0;
+    eirlumeConfig.blockchainNetworks.forEach((bcNetwork) => {
+      if(!bcNetwork.enabled) return;
+
+      const blockFormation = new BlockFormationController(this.scene, index+1, this.gameAssets);
+      const blockchain = new BlockchainController(this.scene, index+1, bcNetwork, blockFormation);
+
+      index++;
 
       this.blockFormations.push(blockFormation);
       this.blockchains.push(blockchain);
 
       blockchain.initialize();
       blockchain.start();
-    }
+    });
   }
 
   clearLevel() {

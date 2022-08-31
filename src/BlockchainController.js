@@ -10,10 +10,10 @@ import '@babylonjs/core/Rendering/edgesRenderer';
 
 export class BlockchainController {
 
-    constructor(scene, index, blockchainNodeUrl, blockFormationController) {
+    constructor(scene, index, bcNetwork, blockFormationController) {
         this.scene = scene;
         this.index = index;
-        this.blockchainNodeUrl = blockchainNodeUrl;
+        this.bcNetwork = bcNetwork;
         this.blockFormationController = blockFormationController;
 
         this.websocket = null;
@@ -23,8 +23,17 @@ export class BlockchainController {
     }
 
     initialize(){
-        this.websocket = new ethers.providers.WebSocketProvider(this.blockchainNodeUrl);
-  
+        try{
+            this.websocket = new ethers.providers.WebSocketProvider(this.bcNetwork.url, this.bcNetwork.name);
+        } catch (e){
+            console.log(e);
+            return;
+        }
+
+        this.websocket.onerror = (e) => {
+            console.log(e);
+        };
+
         // Get the network info
         this.websocket.getNetwork().then((network) => {
             console.log(network);
@@ -47,6 +56,8 @@ export class BlockchainController {
     }
   
     start(){
+        if(!this.websocket) return;
+
         // Subscribe to new mempool transactions
         this.websocket.on('pending', async (tx) => {
             if(!tx) {
@@ -82,6 +93,8 @@ export class BlockchainController {
     }
 
     stop(){
+        if(!this.websocket) return;
+
         this.websocket.off('pending');
         this.websocket.off('block');
     }
