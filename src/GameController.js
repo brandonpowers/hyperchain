@@ -1,9 +1,7 @@
 import {BlockchainController} from "./BlockchainController";
 import {AlienFormationController} from "./AlienFormationController";
 import State from "./State";
-import {PlayerController} from "./PlayerController";
 import config from "../eirlume.config";
-import {Color3} from "@babylonjs/core";
 import {GameGUI} from "./GameGUI";
 import eirlumeConfig from "../eirlume.config";
 
@@ -17,7 +15,6 @@ export class GameController {
     this.gameAssets = gameAssets;
     this.alienFormations = [];
     this.blockchains = [];
-    this.playerController = new PlayerController(environment, this.gameAssets);
   }
 
   initialize() {
@@ -48,7 +45,6 @@ export class GameController {
   loadGameGUI(){
     this.UI.disable();
     this.gameGUI = new GameGUI();
-    this.playerController.mobileInputs.enable(this.gameGUI.texture);
   }
 
   fullScreen() {
@@ -71,19 +67,17 @@ export class GameController {
 
   nextLevel() {
     State.level += 1;
-    this.playerController.movementEnabled = false;
     this.buildAliensFormation();
-    this.playerController.initPlayer();
     State.state = "GAMELOOP";
     //this.gameAssets.sounds.levelStart.play();
   }
 
   checkStates() {
-    this.playerController.actionCam();
     /*
+    this.playerController.actionCam();
+
     if (this.alienFormations[0].alienCount === 0) {
       State.state = "PLAYERWINS";
-      this.playerController.disableMovement();
       setTimeout(() => {
         State.state = "CLEARLEVEL";
         this.gameAssets.sounds.clearLevel.play();
@@ -97,7 +91,6 @@ export class GameController {
 
   aliensWin() {
     State.lives = 0;
-    this.playerController.playerMesh.dispose();
   }
 
   gameOver() {
@@ -167,20 +160,10 @@ export class GameController {
 
   clearLevel() {
     let clearSteps = 4;
-    this.playerController.actionCam(0);
     this.gameGUI.update();
     // Step 1. All barriers must be destroyed.
     if (this.alienFormations[0].barriers.length) {
       this.alienFormations[0].destroyBarriers();
-      clearSteps -= 1;
-    }
-    //Step 2. The player should be moved off-screen.
-    this.playerController.disableMovement();
-    if (this.playerController.moveOffScreen()) {
-      clearSteps -= 1;
-    }
-    // Step 3. Move the mothership offscreen.
-    if (this.alienFormations[0].motherShip.moveOffScreen()) {
       clearSteps -= 1;
     }
     // Step 4. Destroy remaining alien bullets.
@@ -193,8 +176,6 @@ export class GameController {
     }
 
     if (clearSteps === 4) {
-      this.playerController.destroyPlayer();
-      this.alienFormations[0].motherShip.destroyMotherShip();
       this.alienFormations[0].clearScene();
       delete this.alienFormations[0];
       // final cleanup to ensure everything has been disposed of.

@@ -29,7 +29,7 @@ export class GameGUI {
     //Score
     this.textScore = new TextBlock();
     this.textScore.color = "white";
-    this.textScore.fontFamily = '"Bebas Neue"';
+    this.textScore.fontFamily = '"Exo"';
     this.textScore.fontSize = fontSize;
     this.textScore.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
     this.textScore.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
@@ -41,7 +41,7 @@ export class GameGUI {
     this.textLevel = new TextBlock();
     this.textLevel.color = "white";
     this.textLevel.fontSize = fontSize;
-    this.textLevel.fontFamily = '"Bebas Neue"';
+    this.textLevel.fontFamily = '"Exo"';
     this.textLevel.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
     this.textLevel.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
     this.textLevel.left = -spacing;
@@ -52,7 +52,7 @@ export class GameGUI {
     this.textLives = new TextBlock();
     this.textLives.color = "white";
     this.textLives.fontSize = fontSize;
-    this.textLives.fontFamily = '"Bebas Neue"';
+    this.textLives.fontFamily = '"Exo"';
     this.textLives.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
     this.textLives.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
     this.textLives.left = spacing;
@@ -63,7 +63,7 @@ export class GameGUI {
     this.textHigh = new TextBlock();
     this.textHigh.color = "white";
     this.textHigh.fontSize = fontSize;
-    this.textHigh.fontFamily = '"Bebas Neue"';
+    this.textHigh.fontFamily = '"Exo"';
     this.textHigh.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
     this.textHigh.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
     this.textHigh.left = spacing * 3;
@@ -73,10 +73,10 @@ export class GameGUI {
   }
 
   update() {
-    this.textScore.text = "SCORE:" + State.score;
-    this.textLevel.text = "LEVEL:" + State.level;
-    this.textLives.text = "LIVES:" + Math.max(0,State.lives);
-    this.textHigh.text = "HIGH:" + (window.localStorage.getItem('highScore') ?? 0);
+    this.textScore.text = "S:" + State.score;
+    this.textLevel.text = "L:" + State.level;
+    this.textLives.text = "X:" + Math.max(0,State.lives);
+    this.textHigh.text = "H:" + (window.localStorage.getItem('highScore') ?? 0);
   }
 
   getCanvasSize() {

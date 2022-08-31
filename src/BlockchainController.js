@@ -1,6 +1,5 @@
 import {AlienFormationController} from "./AlienFormationController";
 import State from "./State";
-import {PlayerController} from "./PlayerController";
 import config from "../eirlume.config";
 import { BigNumber, ethers } from "ethers";
 

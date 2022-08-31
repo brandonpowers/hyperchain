@@ -1,4 +1,4 @@
-import {Camera, Color3, GlowLayer, HemisphericLight, Scalar, Scene, UniversalCamera, Vector3} from "@babylonjs/core";
+import {Camera, Color3, GlowLayer, HemisphericLight, Scalar, Scene, UniversalCamera, ArcRotateCamera, Vector3} from "@babylonjs/core";
 import eirlumeConfig from "../eirlume.config";
 import State from "./State";
 
@@ -61,16 +61,17 @@ export class Environment {
   }
 
   actionCam(x) {
-    if (eirlumeConfig.actionCam) {
-      this.camera.position.x = Scalar.Lerp(this.camera.position.x, x, 0.1 * State.delta);
-      this.camera.rotation.y = Scalar.Lerp(this.camera.rotation.y, -this.camera.position.x / 300, 0.05 * State.delta);
-    }
+    //if (eirlumeConfig.actionCam) {
+      //this.camera.position.x = Scalar.Lerp(this.camera.position.x, x, 0.1 * State.delta);
+      //this.camera.rotation.y = Scalar.Lerp(this.camera.rotation.y, -this.camera.position.x / 300, 0.05 * State.delta);
+    //}
   }
 
   CreateCamera() {
     let camera;
     if (eirlumeConfig.actionCam) {
-      camera = new UniversalCamera("camera", new Vector3(0, -35, -22), this.scene);
+      //camera = new UniversalCamera("camera", new Vector3(0, -35, -22), this.scene);
+      camera = new ArcRotateCamera("camera", -Math.PI/2, Math.PI, 25, new Vector3(0, 0, -14), this.scene);
     } else {
       camera = new UniversalCamera("camera", new Vector3(0, 50, -150), this.scene);
     }

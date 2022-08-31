@@ -3,11 +3,9 @@ import {Alien} from "./Alien";
 import {Axis, Scalar, Space, Mesh, StandardMaterial, Vector3, Color3, MeshBuilder, TransformNode} from "@babylonjs/core";
 import {AdvancedDynamicTexture, Control, Style, TextBlock} from "@babylonjs/gui";
 import State from "./State";
-import {AlienBullet} from "./AlienBullet";
 import {Barrier} from "./Barrier";
 import {Explosion} from "./Explosion";
 import {shortenAddress} from "./utils/shortenAddress";
-//import {MotherShip} from "./MotherShip";
 //import eirlumeConfig from "../eirlume.config";
 
 export class AlienFormationController {
@@ -41,7 +39,6 @@ export class AlienFormationController {
     this.aliensController = new AliensController(scene);
     this.x = ((this.chainIndex-1) * this.defaultParams.spacing.x) - (this.defaultParams.spacing.x / 2);
 
-    //this.motherShip = new MotherShip(this.gameAssets, scene);
     this.direction = Math.random() < 0.5 ? "left" : "right";
     this.movementStarted = false;
     this.levelParams = this.levelFormationAlgorithm();
@@ -119,7 +116,7 @@ export class AlienFormationController {
     this.advancedTexture.addControl(label);
     //advancedTexture2.addControl(label);
     label.linkWithMesh(alien.mesh);
-    label.linkOffsetY = 220;
+    label.linkOffsetY = 180;
     alien.label = label;
   }
 
@@ -216,21 +213,7 @@ export class AlienFormationController {
     }, 3000);
     this.formationObserver = this.scene.onBeforeRenderObservable.add(() => {
       this.updateAlienMeshPositions();
-      if (this.movementStarted) {
-        this.fireBullets();
-      }
     }, 1);
-  }
-
-  fireBullets() {
-    //if (!this.aliens.length) return;
-    //let firenow = Math.random() * (60 / State.delta) < this.levelParams.fireRate;
-    //if (firenow) {
-    //  let randAlien = this.aliens[Math.floor(Math.random() * this.aliens.length)];
-    //  let randAlienMesh = randAlien.mesh;
-    //  this.bullets.push(new AlienBullet(this.scene, randAlienMesh));
-    //  this.gameAssets.sounds.alienBullet.play();
-    //}
   }
 
   updateAlienMeshPositions() {
