@@ -1,9 +1,10 @@
 import {Color3, Color4, MeshBuilder, Scalar, Vector3, Vector4, StandardMaterial, DynamicTexture, Space, ActionManager, ExecuteCodeAction} from "@babylonjs/core";
 import '@babylonjs/core/Rendering/edgesRenderer';
-import {AliensController} from "./AliensController";
+import {BlocksController} from "./BlocksController";
+import _ from 'lodash';
 import eirlumeConfig from "../eirlume.config";
 
-export class Alien extends AliensController {
+export class Alien extends BlocksController {
 
   constructor(scene, mesh = null, x = 0, y = 0, isMempool = false, block = null) {
     super();
@@ -22,7 +23,6 @@ export class Alien extends AliensController {
       y: 0,
       z: 0
     };
-    //this.txns = Array(this.size*this.size / this.txnSize);
     this.txns = [];
     this.initAlien();
   }
@@ -164,6 +164,7 @@ export class Alien extends AliensController {
     mesh.material.specularColor=Color3.Black();
 
     this.txns[this.txnCount] = txn;
+    this.txnCount++;
 
     const p = {
       x: -((this.size/2) - (this.txnSize/2)),
@@ -198,12 +199,33 @@ export class Alien extends AliensController {
     };
     mesh.enableEdgesRendering();
 
-    this.txnCount++;
+    txn.mesh = mesh;
   }
 
-  updateMempool(txns) {
-    for(let i = 0; i < txns.length; i++) {
-      createTxn(txns[i]);
-    }
+  updateMempool(minedBlock) {
+
+    //const remainingTxns = this.txns.filter(ar => !minedBlock.transactions.find(rm => (rm.hash === ar.hash)));
+    const results = _.partition(this.txns, pt => minedBlock.transactions.find(mt => (mt.hash === pt.hash)));
+    
+    //console.log(results);
+
+    //if(minedBlock.transactions.length !== results[1].length){
+      //console.log('Results don\'t match!!');
+      console.log('Mined');
+      console.log(minedBlock.transactions);
+      console.log('0');
+      console.log(results[0]);
+      console.log('1');
+      console.log(results[1]);
+    //}
+
+    results[1].forEach(t => t.mesh.dispose());
+
+    //const results = _.partition(pendingTxns, function());
+    //_.partition(users, function(o) { return o.active; });
+
+    //for(let i = 0; i < pendingTxns.length; i++) {
+    //  this.createTxn(txns[i]);
+    //}
   }
 }

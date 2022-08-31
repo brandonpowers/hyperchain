@@ -18,7 +18,6 @@ export class BlockchainController {
 
         this.websocket = null;
 
-        this.pendingTxns = [];
         this.network = null;
         this.blockchain = [];
     }
@@ -50,31 +49,35 @@ export class BlockchainController {
     start(){
         // Subscribe to new mempool transactions
         this.websocket.on('pending', async (tx) => {
+            if(!tx) {
+                //console.log(`Tx: ${tx}.`);
+                return;
+            }
+
             const txInfo = await this.websocket.getTransaction(tx);
             
-            //console.log(txInfo);
-
-            this.pendingTxns.push(txInfo);
+            if(!txInfo) {
+                //console.log(`TxInfo: ${txInfo}.`);
+                return;
+            }
 
             this.alienFormationController.createMempoolTxn(txInfo);
         });
 
         // Subscribe to newly mined blocks
         this.websocket.on('block', async (blockNumber) => {
-            const block = await this.websocket.getBlockWithTransactions(blockNumber);
-            console.log(block);
+            const newBlock = await this.websocket.getBlockWithTransactions(blockNumber);
+            console.log(newBlock);
 
             try{
                 // Remove all pending transactions that are in the new block
-                this.pendingTxns = pendingTxns.filter(ar => !block.transactions.find(rm => (rm.hash === ar.hash)));
-                this.alienFormationController.updateMempool(this.pendingTxns);
+                this.alienFormationController.updateMempool(newBlock);
             }catch (error) {
                 console.log(error);
             }
 
-            this.blockchain.push(block);
-
-            this.alienFormationController.createAlien(block);
+            this.blockchain.push(newBlock);
+            this.alienFormationController.createAlien(newBlock);
         });
     }
 

@@ -1,4 +1,4 @@
-export class AliensController {
+export class BlocksController {
 
   static _formation = {
     x: 0,
@@ -9,15 +9,15 @@ export class AliensController {
   }
 
   get formation() {
-    return AliensController._formation;
+    return BlocksController._formation;
   }
 
   set formation(newformation) {
-    AliensController._formation = newformation;
+    BlocksController._formation = newformation;
   }
 
   recenterFormation() {
-    AliensController._formation = {
+    BlocksController._formation = {
       x: 0,
       y: 16
     }

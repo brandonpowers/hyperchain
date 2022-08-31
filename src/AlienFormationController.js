@@ -1,4 +1,4 @@
-import {AliensController} from "./AliensController";
+import {BlocksController} from "./BlocksController";
 import {Alien} from "./Alien";
 import {Axis, Scalar, Space, Mesh, StandardMaterial, Vector3, Color3, MeshBuilder, TransformNode} from "@babylonjs/core";
 import {AdvancedDynamicTexture, Control, Style, TextBlock} from "@babylonjs/gui";
@@ -36,7 +36,7 @@ export class AlienFormationController {
     this.chainIndex = chainIndex;
     this.chainCount = chainCount;
     this.gameAssets = gameAssets;
-    this.aliensController = new AliensController(scene);
+    //this.blocksController = new BlocksController(scene);
     this.x = ((this.chainIndex-1) * this.defaultParams.spacing.x) - (this.defaultParams.spacing.x / 2);
 
     this.direction = Math.random() < 0.5 ? "left" : "right";
@@ -79,8 +79,8 @@ export class AlienFormationController {
     this.aliens[0].createTxn(txn);
   }
 
-  updateMempool(txns) {
-    this.aliens[0].updateMempool(txns);
+  updateMempool(minedBlock) {
+    this.aliens[0].updateMempool(minedBlock);
   }
 
   createMempool(network) {
@@ -233,17 +233,17 @@ export class AlienFormationController {
 
   moveFormation() {
     //if (this.direction === "right") {
-    //  this.aliensController.formation.x += 5;
+    //  this.blocksController.formation.x += 5;
     //}
     //if (this.direction === "left") {
-    //  this.aliensController.formation.x -= 5;
+    //  this.blocksController.formation.x -= 5;
     //}
     if (this.direction === "down") {
       // If the player has died no need to move further
       // down during the delay before loading the next level
-      if (State.state !== "GAMEOVER") {
-        this.aliensController.formation.y -= 5;
-      }
+      //if (State.state !== "GAMEOVER") {
+      //  this.blocksController.formation.y -= 5;
+      //}
       this.direction = this.nextDirection;
     }
     //this.formationAnimSpeed = Scalar.Lerp(this.formationAnimSpeed, 0.8, 0.013);
@@ -270,7 +270,7 @@ export class AlienFormationController {
   clearScene() {
     this.scene.onBeforeRenderObservable.remove(this.formationObserver);
     clearTimeout(this.formationAnimTick);
-    this.aliensController.recenterFormation();
+    //this.blocksController.recenterFormation();
   }
 
   levelFormationAlgorithm() {
