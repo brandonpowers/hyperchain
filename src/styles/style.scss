@@ -234,25 +234,6 @@ canvas {
     }
   }
 
-  #panel-new-highscore {
-    display: none;
-    position: absolute;
-    color: #ffff00;
-    left: 50%;
-    top: 35%;
-    text-align: center;
-    transform: translate(-50%, -50%);
-
-    &.active {
-      display: block;
-    }
-
-    .value {
-      color: #09EAB4;
-      padding-top: 1em;
-    }
-  }
-
   #panel-game-hints {
     display: none;
     position: absolute;
@@ -316,7 +297,7 @@ canvas {
 
     #title {
       position: absolute;
-      top: 30%;
+      top: 23px;
       width: 100%;
       text-align: center;
       font-size: 6vh;

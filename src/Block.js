@@ -10,7 +10,7 @@ export class Block extends BlocksController {
     super();
     this.sourceMesh = mesh;
     this.size = 8;
-    this.txnSize = 1;
+    this.txnSize = 0.5;
     this.txnCount = 0;
     this.x = x;
     this.y = y;
@@ -23,6 +23,10 @@ export class Block extends BlocksController {
       y: 0,
       z: 0
     };
+
+    this.txnLimit = 1.0 * this.size * this.size * this.size / (this.txnSize * this.txnSize * this.txnSize);
+    this.positionsPerDim = Math.cbrt(this.txnLimit);
+
     this.txns = [];
     this.initBlock();
   }
@@ -138,9 +142,6 @@ export class Block extends BlocksController {
 
     if(!txn || !txn.hash) return;
 
-    const txnLimit = this.size * this.size * this.size / this.txnSize;
-    const positionsPerDim = Math.cbrt(txnLimit);
-
     const name = "txn-" + txn.hash;
     const mesh = new MeshBuilder.CreateBox(name, {
       width: this.txnSize,
@@ -176,15 +177,15 @@ export class Block extends BlocksController {
     p.y += this.txnSize*this.txnsPos.y;
     p.z -= this.txnSize*this.txnsPos.z;
 
-    if(++this.txnsPos.y >= positionsPerDim){
+    if(++this.txnsPos.y >= this.positionsPerDim){
       this.txnsPos.y = 0;
       this.txnsPos.x++;
     }
-    if(this.txnsPos.x >= positionsPerDim){
+    if(this.txnsPos.x >= this.positionsPerDim){
       this.txnsPos.x = 0
       this.txnsPos.z++;
     }
-    if(this.txnsPos.z >= positionsPerDim){
+    if(this.txnsPos.z >= this.positionsPerDim){
       console.log("Out of txn positions!");
       this.txnsPos.z = 0;
     }

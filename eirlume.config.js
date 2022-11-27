@@ -20,11 +20,17 @@ export default {
   startingLives: 2,
   blockchainRPM: 1,
   blockchainNetworks: [
-    // Goerli on Quicknode
+    // Ethereum Goerli on Quicknode
     {
-      enabled: false,
+      enabled: true,
       name: 'goerli',
       url: 'wss://ancient-solemn-fire.ethereum-goerli.discover.quiknode.pro/4b2a416e99c24a47e9e0064bf6866d2188f0b809/'
+    },
+    // Ethereum Mainnet on Quicknode
+    {
+      enabled: true,
+      name: 'mainnet',
+      url: 'wss://summer-blue-vineyard.quiknode.pro/be5c8e7da2a8a5080d75b03838b77ce2d5d617e6/'
     },
     // Ethereum Goerli testnet on Infura
     {
@@ -40,7 +46,7 @@ export default {
     },
     // Ethereum 2.0 Prater testnet on Infura
     {
-      enabled: true,
+      enabled: false,
       name: null,
       url: 'wss://2E67sGBrz8n4vepFifc4vjOL1EB:831a2b6d9f7e6ec1e8ce43dbdf77617c@eth2-beacon-prater.infura.io'
     },

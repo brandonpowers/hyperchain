@@ -49,8 +49,8 @@ export class UIText {
   }
 
   disable() {
-    let UI = document.querySelector("#ui");
-    UI.classList.remove("active");
+    //let UI = document.querySelector("#ui");
+    //UI.classList.remove("active");
   }
 
   showGameUI() {
@@ -106,18 +106,6 @@ export class UIText {
     this.playAgainPressed = false;
   }
 
-  showNewHighScore() {
-    this.enable();
-    document.querySelector("#panel-new-highscore .value").innerHTML = window.localStorage.getItem('highScore');
-    let UI = document.querySelector("#panel-new-highscore");
-    UI.classList.add("active");
-  }
-
-  hideNewHighScore() {
-    let UI = document.querySelector("#panel-new-highscore");
-    UI.classList.remove("active");
-  }
-
   showTitleScreen() {
     this.enable();
     let UI = document.querySelector("#title-screen");
@@ -127,8 +115,8 @@ export class UIText {
   }
 
   hideTitleScreen() {
-    let UI = document.querySelector("#title-screen");
-    UI.classList.remove("active");
+    //let UI = document.querySelector("#title-screen");
+    //UI.classList.remove("active");
     let buttons = document.querySelector("#intro");
     buttons.classList.remove("active");
   }
