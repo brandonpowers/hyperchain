@@ -1,7 +1,4 @@
-# Space Invaders
-A fun re-imagining of the 1978 classic by Tomohiro Nishikado and Taito.
-
-Play it here: https://spaceinvaders.viperfish.com.au
+# hyperchain
 
 ![eirlume screenshot](https://eirlume.io/assets/images/screenshot.jpg)
 
